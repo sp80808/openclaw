@@ -134,6 +134,39 @@ Run `openclaw doctor` to surface risky/misconfigured DM policies.
 - **[Companion apps](https://docs.openclaw.ai/platforms/macos)** — macOS menu bar app + iOS/Android [nodes](https://docs.openclaw.ai/nodes).
 - **[Onboarding](https://docs.openclaw.ai/start/wizard) + [skills](https://docs.openclaw.ai/tools/skills)** — wizard-driven setup with bundled/managed/workspace skills.
 
+## Sp8Claw Power Pack — 15 battle-tested, privacy-first tools that turn Sp8Claw into your personal OS
+
+Security-first defaults:
+
+- Trusted-only catalog: no unvetted ClawHub skills.
+- Priority sources: `@steipete` skills + official MCP servers from `mcp.so`.
+- MCP-first wrapping: registered through `mcporter` where possible.
+- Sp8 vetting gates: VirusTotal report + strict sandbox + explicit consent.
+
+Install curated skills safely:
+
+```bash
+sp8 skill install gog --safe --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
+# or: openclaw sp8 skill install gog --safe --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
+```
+
+Add vetted MCP servers:
+
+```bash
+sp8 mcp add github-mcp --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
+# or: openclaw sp8 mcp add github-mcp --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
+```
+
+Bulk install script:
+
+```bash
+bash scripts/sp8-power-pack-install.sh ./scripts/sp8-vt-clean.template.json
+```
+
+Power Pack trusted skills (15): `gog`, `github`, `summarize`, `ontology`, `self-improving-agent`, `cognitive-memory`, `trello`, `slack`, `caldav`, `mcp-builder`, `agentlens`, `buildlog`, `evolver`, `linear`, `agentmail`.
+
+Power Pack MCP set: `mcporter`, `playwright`, `postgresql-readonly`, `redis`, `filesystem-scoped`, `linear`, `jira`, `github-mcp`.
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=openclaw/openclaw&type=date&legend=top-left)](https://www.star-history.com/#openclaw/openclaw&type=date&legend=top-left)

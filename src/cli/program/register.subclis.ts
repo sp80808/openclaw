@@ -47,6 +47,15 @@ const entries: SubCliEntry[] = [
     },
   },
   {
+    name: "sp8",
+    description: "Sp8Claw router, swarm, Antigravity, and MCP controls",
+    hasSubcommands: true,
+    register: async (program) => {
+      const mod = await import("../sp8-cli.js");
+      mod.registerSp8Cli(program);
+    },
+  },
+  {
     name: "gateway",
     description: "Run, inspect, and query the WebSocket Gateway",
     hasSubcommands: true,

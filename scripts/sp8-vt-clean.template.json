@@ -1,0 +1,9 @@
+{
+  "clean": true,
+  "stats": {
+    "malicious": 0,
+    "suspicious": 0,
+    "harmless": 75,
+    "undetected": 10
+  }
+}

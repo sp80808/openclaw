@@ -1,0 +1,106 @@
+version: 0.1.2
+description: Base ontology schema for Personal KG with user-extensible types.
+entityTypes:
+  person:
+    description: Human identities in the user's personal/work graph.
+    required:
+      - id
+      - label
+    properties:
+      handles:
+        type: string[]
+      timezone:
+        type: string
+      roles:
+        type: string[]
+  project:
+    description: Ongoing projects, repos, initiatives, or goals.
+    required:
+      - id
+      - label
+    properties:
+      status:
+        type: string
+      repo:
+        type: string
+      priority:
+        type: string
+      tags:
+        type: string[]
+  skill:
+    description: Skills and capability modules with ontology access declarations.
+    required:
+      - id
+      - label
+    properties:
+      reads:
+        type: string[]
+      writes:
+        type: string[]
+      source:
+        type: string
+  task:
+    description: Actionable work units and plans.
+    required:
+      - id
+      - label
+    properties:
+      state:
+        type: string
+      due:
+        type: string
+      intensity:
+        type: string
+  concept:
+    description: Abstract ideas, preferences, style, and evolving patterns.
+    required:
+      - id
+      - label
+    properties:
+      domain:
+        type: string
+      confidence:
+        type: number
+relationTypes:
+  references:
+    from:
+      - task
+      - project
+      - concept
+    to:
+      - concept
+      - project
+      - person
+  owns:
+    from:
+      - person
+    to:
+      - project
+      - task
+  depends_on:
+    from:
+      - task
+      - project
+    to:
+      - task
+      - project
+  implemented_by:
+    from:
+      - concept
+      - project
+    to:
+      - skill
+  blocked_by:
+    from:
+      - task
+      - project
+    to:
+      - concept
+      - task
+alerts:
+  invalid_relation:
+    severity: high
+  missing_required_property:
+    severity: medium
+  unknown_entity_type:
+    severity: medium
