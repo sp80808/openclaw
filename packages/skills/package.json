@@ -1,0 +1,11 @@
+{
+  "name": "@openclaw/skills",
+  "version": "0.1.0",
+  "description": "Sp8Claw music producer and DJ skills with UVT-aware local workflows",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./uvt-bridge": "./src/uvt-bridge/index.ts"
+  }
+}

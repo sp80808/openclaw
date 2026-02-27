@@ -61,6 +61,98 @@ entityTypes:
         type: string
       confidence:
         type: number
+  sample:
+    description: Audio sample clip from local packs or UVT soundbanks.
+    required:
+      - id
+      - label
+    properties:
+      file:
+        type: string
+      bpm:
+        type: number
+      key:
+        type: string
+      source:
+        type: string
+  stem:
+    description: Isolated stem generated from track separation.
+    required:
+      - id
+      - label
+    properties:
+      sourceTrack:
+        type: string
+      role:
+        type: string
+  track:
+    description: Individual song or production unit.
+    required:
+      - id
+      - label
+    properties:
+      key:
+        type: string
+      bpm:
+        type: number
+      energy:
+        type: number
+  set:
+    description: DJ set plan with transitions and crowd-flow metadata.
+    required:
+      - id
+      - label
+    properties:
+      venue:
+        type: string
+      durationMinutes:
+        type: number
+      energyArc:
+        type: string
+  progression:
+    description: Chord/melodic progression blueprint.
+    required:
+      - id
+      - label
+    properties:
+      key:
+        type: string
+      bars:
+        type: number
+      styleSignature:
+        type: string[]
+  performancelog:
+    description: Realtime performance telemetry and operator notes.
+    required:
+      - id
+      - label
+    properties:
+      crowdEnergy:
+        type: number
+      latencyMs:
+        type: number
+      clipping:
+        type: boolean
+  uvtpreset:
+    description: Preset exported for local UVT workflows.
+    required:
+      - id
+      - label
+    properties:
+      presetPath:
+        type: string
+      instrument:
+        type: string
+  pluginpatch:
+    description: Patch definition for Max/MSP, VST, or WebAudio.
+    required:
+      - id
+      - label
+    properties:
+      target:
+        type: string
+      patchPath:
+        type: string
 relationTypes:
   references:
     from:
@@ -97,6 +189,29 @@ relationTypes:
     to:
       - concept
       - task
+  sampled_from:
+    from:
+      - stem
+      - track
+    to:
+      - sample
+  arranged_in:
+    from:
+      - track
+    to:
+      - set
+  logs:
+    from:
+      - performancelog
+    to:
+      - set
+      - track
+  exports_to:
+    from:
+      - progression
+      - pluginpatch
+    to:
+      - uvtpreset
 alerts:
   invalid_relation:
     severity: high

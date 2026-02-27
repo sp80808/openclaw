@@ -3,7 +3,7 @@ import path from "node:path";
 import { resolveStateDir } from "../config/paths.js";
 
 type Sp8Enhancement =
-  | "antigravity-physics-canvas"
+  | "antigravity-canvas-visuals"
   | "swarm-delegation"
   | "personal-kg-auto-indexing"
   | "style-mirror-adaptation"
@@ -73,7 +73,7 @@ type Sp8PowerPackState = {
 };
 
 const DEFAULT_ENHANCEMENTS: Sp8Enhancement[] = [
-  "antigravity-physics-canvas",
+  "antigravity-canvas-visuals",
   "swarm-delegation",
   "personal-kg-auto-indexing",
   "style-mirror-adaptation",
@@ -82,93 +82,51 @@ const DEFAULT_ENHANCEMENTS: Sp8Enhancement[] = [
 
 const TRUSTED_SKILLS: readonly TrustedSkill[] = [
   {
-    name: "gog",
+    name: "pluginforge",
     source: "steipete",
-    summary: "High-signal retrieval and research orchestration.",
+    summary: "Generate Max/MSP, VST, and WebAudio patches with UVT auto-load + audition.",
     enhancements: DEFAULT_ENHANCEMENTS,
   },
   {
-    name: "github",
+    name: "stemuvt",
     source: "steipete",
-    summary: "GitHub issue/PR operations with safe automation patterns.",
+    summary: "Route stem separation through your local UVT install with autoload workflows.",
     enhancements: DEFAULT_ENHANCEMENTS,
   },
   {
-    name: "summarize",
+    name: "sampleoracle",
     source: "steipete",
-    summary: "Long-context summaries with concise decision framing.",
+    summary: "Intelligent sample discovery across local folders and UVT soundbanks.",
     enhancements: DEFAULT_ENHANCEMENTS,
   },
   {
-    name: "ontology",
+    name: "setforge",
     source: "steipete",
-    summary: "Structured concept graphs for persistent project memory.",
+    summary: "DJ set builder with harmonic compatibility and crowd-energy arc planning.",
     enhancements: DEFAULT_ENHANCEMENTS,
   },
   {
-    name: "self-improving-agent",
+    name: "chorddreamer",
     source: "steipete",
-    summary: "Agent feedback loops for iterative plan refinement.",
+    summary: "Style-exact generative chords/melodies with UVT preset export.",
     enhancements: DEFAULT_ENHANCEMENTS,
   },
   {
-    name: "cognitive-memory",
+    name: "liveguard",
     source: "steipete",
-    summary: "Durable memory indexing + recall across sessions.",
+    summary: "Real-time performance co-pilot for latency, clipping, and transition safety.",
     enhancements: DEFAULT_ENHANCEMENTS,
   },
   {
-    name: "trello",
+    name: "mixshadow",
     source: "steipete",
-    summary: "Task board integration for planning and execution.",
+    summary: "Visual mix analysis with targeted production fixes and stage-safe suggestions.",
     enhancements: DEFAULT_ENHANCEMENTS,
   },
   {
-    name: "slack",
+    name: "memogravity",
     source: "steipete",
-    summary: "Slack-native assistant workflows and routing.",
-    enhancements: DEFAULT_ENHANCEMENTS,
-  },
-  {
-    name: "caldav",
-    source: "steipete",
-    summary: "Calendar scheduling via CalDAV providers.",
-    enhancements: DEFAULT_ENHANCEMENTS,
-  },
-  {
-    name: "mcp-builder",
-    source: "steipete",
-    summary: "Scaffold and validate MCP server/tool definitions.",
-    enhancements: DEFAULT_ENHANCEMENTS,
-  },
-  {
-    name: "agentlens",
-    source: "steipete",
-    summary: "Agent trace observability and diagnostics.",
-    enhancements: DEFAULT_ENHANCEMENTS,
-  },
-  {
-    name: "buildlog",
-    source: "steipete",
-    summary: "Build + CI log digestion for faster root-cause analysis.",
-    enhancements: DEFAULT_ENHANCEMENTS,
-  },
-  {
-    name: "evolver",
-    source: "steipete",
-    summary: "Hypothesis-driven iteration for agents and prompts.",
-    enhancements: DEFAULT_ENHANCEMENTS,
-  },
-  {
-    name: "linear",
-    source: "steipete",
-    summary: "Linear issue/project flow for engineering teams.",
-    enhancements: DEFAULT_ENHANCEMENTS,
-  },
-  {
-    name: "agentmail",
-    source: "steipete",
-    summary: "Structured inbound/outbound email triage.",
+    summary: "Voice/text memo to playable assets + UVT load in one local pass.",
     enhancements: DEFAULT_ENHANCEMENTS,
   },
 ];

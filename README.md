@@ -134,38 +134,61 @@ Run `openclaw doctor` to surface risky/misconfigured DM policies.
 - **[Companion apps](https://docs.openclaw.ai/platforms/macos)** — macOS menu bar app + iOS/Android [nodes](https://docs.openclaw.ai/nodes).
 - **[Onboarding](https://docs.openclaw.ai/start/wizard) + [skills](https://docs.openclaw.ai/tools/skills)** — wizard-driven setup with bundled/managed/workspace skills.
 
-## Sp8Claw Power Pack — 15 battle-tested, privacy-first tools that turn Sp8Claw into your personal OS
+## Sp8Claw for Music Producers & DJs Who Already Have UVT — Your Studio Just Got Superpowers
 
-Security-first defaults:
+This profile is built for hybrid creator workflows (producer + DJ + developer) and assumes UVT is already installed locally.
 
-- Trusted-only catalog: no unvetted ClawHub skills.
-- Priority sources: `@steipete` skills + official MCP servers from `mcp.so`.
-- MCP-first wrapping: registered through `mcporter` where possible.
-- Sp8 vetting gates: VirusTotal report + strict sandbox + explicit consent.
+What changes in this mode:
 
-Install curated skills safely:
+- PluginForge is the star feature and always runs UVT-aware preview (`auto-load` + `audition`).
+- AudioPhysics is removed; Antigravity Canvas stays visual-only (clean cards/timelines/spectrograms).
+- All skills are local-first: UVT CLI + file-drop workflows, no cloud relay required.
+- Ontology KG tracks studio-native entities (Sample, Stem, Track, Set, Progression, PerformanceLog, UVTPreset, PluginPatch).
 
-```bash
-sp8 skill install gog --safe --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
-# or: openclaw sp8 skill install gog --safe --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
-```
-
-Add vetted MCP servers:
+Safe install path:
 
 ```bash
-sp8 mcp add github-mcp --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
-# or: openclaw sp8 mcp add github-mcp --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
+sp8 skill install pluginforge --safe --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
+# or: openclaw sp8 skill install pluginforge --safe --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
 ```
 
-Bulk install script:
+Bulk install all 8 music skills:
 
 ```bash
 bash scripts/sp8-power-pack-install.sh ./scripts/sp8-vt-clean.template.json
 ```
 
-Power Pack trusted skills (15): `gog`, `github`, `summarize`, `ontology`, `self-improving-agent`, `cognitive-memory`, `trello`, `slack`, `caldav`, `mcp-builder`, `agentlens`, `buildlog`, `evolver`, `linear`, `agentmail`.
+The 8 music skills in this pivot:
 
-Power Pack MCP set: `mcporter`, `playwright`, `postgresql-readonly`, `redis`, `filesystem-scoped`, `linear`, `jira`, `github-mcp`.
+1. `PluginForge` — Max/MSP, VST, WebAudio patches + UVT auto-audition
+2. `StemUVT` — stem separation routed into your local UVT
+3. `SampleOracle` — local sample intelligence with UVT soundbank search
+4. `SetForge` — harmonic + energy arc DJ set construction
+5. `ChordDreamer` — style-exact harmonic generation + UVT preset export
+6. `LiveGuard` — real-time performance co-pilot
+7. `MixShadow` — visual mix analysis and practical fixes
+8. `MemoGravity` — memo-to-asset generation + UVT load
+
+Trusted MCP set remains: `mcporter`, `playwright`, `postgresql-readonly`, `redis`, `filesystem-scoped`, `linear`, `jira`, `github-mcp`.
+
+## Ontology-Powered Personal KG — Your Second Brain with Physics
+
+Sp8Claw now treats Personal KG as a native ontology system (not a bolt-on skill):
+
+- Hybrid storage model: append-only ontology graph (`graph.jsonl`) + vector-ready retrieval + optional SQLite indexing.
+- First-run migration support for legacy memory records into typed entities.
+- Native CLI commands under `sp8 kg` for query, graph snapshots, evolution loops, and validation.
+- Physics-ready graph snapshots (`sp8 kg graph --physics`) for Antigravity canvas renderers.
+- Skill governance path: `sp8 kg validate` checks that `SKILL.md` frontmatter declares ontology `reads`/`writes`.
+
+Quick commands:
+
+```bash
+sp8 kg query "what do I know about release process"
+sp8 kg graph --physics
+sp8 kg evolve "plan migration to typed ontology entities"
+sp8 kg validate
+```
 
 ## Star History
 

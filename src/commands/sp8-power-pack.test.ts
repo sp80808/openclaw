@@ -20,7 +20,7 @@ describe("sp8 power pack", () => {
       await fs.writeFile(vtPath, JSON.stringify({ clean: true }), "utf-8");
 
       const result = await installSp8SkillSafe({
-        name: "github",
+        name: "pluginforge",
         safe: true,
         consent: true,
         sandboxProfile: "strict",
@@ -31,7 +31,7 @@ describe("sp8 power pack", () => {
       const state = JSON.parse(await fs.readFile(result.statePath, "utf-8")) as {
         installedSkills: Record<string, { source: string }>;
       };
-      expect(state.installedSkills.github?.source).toBe("steipete");
+      expect(state.installedSkills.pluginforge?.source).toBe("steipete");
     });
   });
 

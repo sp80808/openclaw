@@ -18,21 +18,14 @@ $cliBin = if (Get-Command sp8 -ErrorAction SilentlyContinue) {
 }
 
 $skills = @(
-  "gog",
-  "github",
-  "summarize",
-  "ontology",
-  "self-improving-agent",
-  "cognitive-memory",
-  "trello",
-  "slack",
-  "caldav",
-  "mcp-builder",
-  "agentlens",
-  "buildlog",
-  "evolver",
-  "linear",
-  "agentmail"
+  "pluginforge",
+  "stemuvt",
+  "sampleoracle",
+  "setforge",
+  "chorddreamer",
+  "liveguard",
+  "mixshadow",
+  "memogravity"
 )
 
 $mcps = @(
