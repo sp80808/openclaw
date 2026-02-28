@@ -143,6 +143,10 @@ async function loadPromotions(stateDir?: string): Promise<PromotionEntry[]> {
 export function classifyTask(taskText: string): TaskClass {
   const lower = taskText.toLowerCase();
 
+  // Vision checked early — image/screenshot/photo are strong unambiguous signals
+  if (/(image|screenshot|photo|visual|picture|diagram|chart)/.test(lower)) {
+    return "vision";
+  }
   if (
     /(write code|implement|refactor|fix bug|debug|typescript|python|function|class |import )/.test(
       lower,
@@ -155,9 +159,6 @@ export function classifyTask(taskText: string): TaskClass {
   }
   if (/(plan|roadmap|strategy|break down|decompose|outline|steps to)/.test(lower)) {
     return "planning";
-  }
-  if (/(image|screenshot|photo|visual|picture|diagram|chart)/.test(lower)) {
-    return "vision";
   }
   if (/(quick|fast|short answer|one.?line|tl;?dr|brief)/.test(lower)) {
     return "speed";
