@@ -36,8 +36,22 @@ Sp8Claw is the OpenClaw fork for privacy-conscious power users who want free-fir
 
 - Free-first model strategy: OpenRouter free catalog + Gemini CLI OAuth + local fallback paths
 - Sp8Router failover: rotates free models automatically on 429/529/timeouts
+- Historical health scoring + circuit breakers: tracks success/latency/429 trends and auto-blacklists unstable models for 30 minutes
 - Parallel intensive mode: OpenRouter + Gemini CLI consensus fusion for heavy tasks
-- Native control plane: `sp8 router`, `sp8 swarm`, `sp8 evolve`, and `sp8 mcp`
+- Native control plane: `sp8 onboard`, `sp8 router`, `sp8 swarm`, `sp8 evolve`, and `sp8 mcp`
+
+### Sp8 quick commands
+
+```bash
+# Free-first setup plan (hardware-aware local recommendations)
+openclaw sp8 onboard --free-first
+
+# Strict local-only profile with external calls blocked
+openclaw sp8 onboard --free-first --airgap
+
+# Router status + historical health/circuit-breaker view
+openclaw sp8 router status --history
+```
 
 ## Sponsors
 
@@ -161,6 +175,47 @@ openclaw sp8 feature enable <name>
 
 Reference changelog for SP8 merge notes: `CHANGELOG-S8.md`.
 
+## Self-Optimizing Agent Features
+
+Sp8Claw goes beyond static routing — it **proactively improves itself** via periodic research, benchmark-aware model selection, shadow testing, and automatic behavior refinement.
+
+### Sp8SelfImprove — Agentic Self-Improvement Loop
+
+Five variant modes with progressively higher success rates:
+
+| Variant | Technique                                      | Expected Lift     | When to Use              |
+| ------- | ---------------------------------------------- | ----------------- | ------------------------ |
+| v1      | Conversational RLHF (thumbs up/down)           | +15–25%           | Default / lightweight    |
+| v2      | Reflexion + self-critique                      | +30–45%           | Reasoning heavy tasks    |
+| v3      | Agent-as-Judge (local judge scores candidates) | +40–60%           | Consensus mode (default) |
+| v4      | Evolutionary prompt/tool search (tournament)   | +50–90% long-term | Nightly evolution        |
+| v5      | Distilled RL from strong free model            | +70–120% ceiling  | Power users / GPU        |
+
+```bash
+sp8 evolve full --mode v3              # Agent-as-Judge (default)
+sp8 evolve full --mode v4 --population 16  # Evolutionary search
+sp8 evolve report                      # Win-rate-over-time + metrics dashboard
+```
+
+### Sp8ModelHunter — Agentic Free Model Discovery & Auto-Config
+
+Automated pipeline: discover free models → rank by agent/tool-calling strength → shadow-test top candidates → promote winners to routing.
+
+```bash
+sp8 models hunt --focus agent-tool-use --max-candidates 8
+sp8 models status                      # Current routing weights + win rates
+sp8 models shadow-history              # Past shadow-test results
+```
+
+Prioritized free models (Feb 2026): Qwen3 Coder-Next, GLM-4.5-Air, DeepSeek-V3.2 Speciale, Step 3.5 Flash, Arcee Trinity, Nemotron Nano 30B, Llama 4 Scout/Maverick.
+
+### Safety Rails & Integration
+
+- **Task-class routing** — auto-classifies tasks (coding/reasoning/planning/agent/vision/speed) and routes to the best-performing model for that class.
+- **Fallback chain hardening** — 3× consecutive 429s → auto-downgrade + user notification.
+- **User confirmation gate** — `--auto-apply` off by default; all mutations logged.
+- **Metrics dashboard** — `sp8 evolve report` shows win-rate-over-time (ASCII chart), task-class breakdown, fallback events.
+
 ## Sp8Claw 2026 upgrade roadmap (planned)
 
 Sp8Claw keeps the free-first + privacy core, then adds optional profiles inspired by the broader Claw ecosystem.
@@ -179,10 +234,11 @@ Sp8Claw keeps the free-first + privacy core, then adds optional profiles inspire
 ### Reliability + security baseline (still required)
 
 - Model health scoring to prioritize stable providers in failover queues.
+- Circuit breakers that auto-blacklist repeatedly failing models for 30 minutes.
 - Retry-budget policies per task class to prevent runaway retries.
 - Secure-store hardening (typed payloads, versioning, and safer fallbacks).
 - TTL + size-bounded task cache for repeated prompts.
-- Read-only SP8 diagnostics (`sp8 status`) for routing/cache/error visibility.
+- Read-only SP8 diagnostics (`sp8 router status --history`) for routing/cache/error visibility.
 - Security-first sandbox defaults (seccomp/gVisor profile + PII redaction before cloud fallback + optional strict egress allowlist mode).
 
 ### First 10-day execution order
