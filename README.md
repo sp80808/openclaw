@@ -32,12 +32,12 @@ New install? Start here: [Getting started](https://docs.openclaw.ai/start/gettin
 
 ## Why Sp8Claw
 
-Sp8Claw is the OpenClaw fork for privacy-conscious power users who want free-only agent routing, Antigravity workflows, and resilient multi-modal execution by default.
+Sp8Claw is the OpenClaw fork for privacy-conscious power users who want free-first routing, resilient execution, and practical local automation by default.
 
 - Free-first model strategy: OpenRouter free catalog + Gemini CLI OAuth + local fallback paths
 - Sp8Router failover: rotates free models automatically on 429/529/timeouts
 - Parallel intensive mode: OpenRouter + Gemini CLI consensus fusion for heavy tasks
-- Native control plane: `sp8 router`, `sp8 swarm`, `sp8 antigravity`, `sp8 evolve`, and `sp8 mcp`
+- Native control plane: `sp8 router`, `sp8 swarm`, `sp8 evolve`, and `sp8 mcp`
 
 ## Sponsors
 
@@ -143,61 +143,59 @@ Run `openclaw doctor` to surface risky/misconfigured DM policies.
 - **[Companion apps](https://docs.openclaw.ai/platforms/macos)** — macOS menu bar app + iOS/Android [nodes](https://docs.openclaw.ai/nodes).
 - **[Onboarding](https://docs.openclaw.ai/start/wizard) + [skills](https://docs.openclaw.ai/tools/skills)** — wizard-driven setup with bundled/managed/workspace skills.
 
-## Sp8Claw for Music Producers & DJs Who Already Have UVT — Your Studio Just Got Superpowers
+## Forks Integrated
 
-This profile is built for hybrid creator workflows (producer + DJ + developer) and assumes UVT is already installed locally.
-
-What changes in this mode:
-
-- PluginForge is the star feature and always runs UVT-aware preview (`auto-load` + `audition`).
-- AudioPhysics is removed; Antigravity Canvas stays visual-only (clean cards/timelines/spectrograms).
-- All skills are local-first: UVT CLI + file-drop workflows, no cloud relay required.
-- Ontology KG tracks studio-native entities (Sample, Stem, Track, Set, Progression, PerformanceLog, UVTPreset, PluginPatch).
-
-Safe install path:
+The following high-value fork ideas are integrated as optional SP8 features. Each one is opt-in and can be enabled with:
 
 ```bash
-sp8 skill install pluginforge --safe --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
-# or: openclaw sp8 skill install pluginforge --safe --consent --sandbox-profile strict --vt-report ./scripts/sp8-vt-clean.template.json
+openclaw sp8 feature enable <name>
 ```
 
-Bulk install all 8 music skills:
+- `antigravity-gemini-oauth` — Antigravity + Gemini OAuth patterns (remote-safe PKCE/manual callback fallback).
+- `self-evolving-rl-loop` — async RL pipeline concepts (collection/reward/train loop decoupling).
+- `cognitive-memory-kg` — sqlite-vec + hybrid memory retrieval + nightly consolidation concepts.
+- `mcp-agent-teams` — MCP server orchestration + role-based agent-team workflows.
+- `resilient-browser-relay` — reconnect/state-restore/keepalive browser relay resilience patterns.
+- `time-travel-debugger` — replay/fork/rewind trace debugging concepts.
+- `local-first-routing` — LocalClaw-style local-first routing and fallback policy patterns.
 
-```bash
-bash scripts/sp8-power-pack-install.sh ./scripts/sp8-vt-clean.template.json
-```
+Reference changelog for SP8 merge notes: `CHANGELOG-S8.md`.
 
-The 8 music skills in this pivot:
+## Sp8Claw 2026 upgrade roadmap (planned)
 
-1. `PluginForge` — Max/MSP, VST, WebAudio patches + UVT auto-audition
-2. `StemUVT` — stem separation routed into your local UVT
-3. `SampleOracle` — local sample intelligence with UVT soundbank search
-4. `SetForge` — harmonic + energy arc DJ set construction
-5. `ChordDreamer` — style-exact harmonic generation + UVT preset export
-6. `LiveGuard` — real-time performance co-pilot
-7. `MixShadow` — visual mix analysis and practical fixes
-8. `MemoGravity` — memo-to-asset generation + UVT load
+Sp8Claw keeps the free-first + privacy core, then adds optional profiles inspired by the broader Claw ecosystem.
 
-Trusted MCP set remains: `mcporter`, `playwright`, `postgresql-readonly`, `redis`, `filesystem-scoped`, `linear`, `jira`, `github-mcp`.
+### Planned command surfaces
 
-## Ontology-Powered Personal KG — Your Second Brain with Physics
+- `sp8 onboard --pico` / `sp8 onboard --pico --export`: single-binary profile for constrained hardware (router + minimal loop + local voice + selected channels).
+- `sp8 nodes add --type embedded --chip esp32s3`: embedded bridge profile for low-cost edge actuators/sensors over MQTT/BLE.
+- `sp8 evolve --mode conversational`: local preference-learning loop for SOUL/profile/tool/routing adaptation.
+- `sp8 router add-local --url <openai-compatible-url> --name <alias>`: universal local endpoint adapter (Ollama, vLLM, llama.cpp server, LM Studio, custom OpenAI-compatible servers).
+- `sp8 export --airgap --include memory,skills,profile`: encrypted portable profile bundle for fast transfer/import.
+- `sp8 audit diff`: workspace-change audit since last review checkpoint.
+- `sp8 benchmark --compare pico,zeroclaw,main`: local performance/cost benchmark view.
+- `sp8 upgrade --steal-from <forks>`: guided fork-diff intake/cherry-pick helper.
 
-Sp8Claw now treats Personal KG as a native ontology system (not a bolt-on skill):
+### Reliability + security baseline (still required)
 
-- Hybrid storage model: append-only ontology graph (`graph.jsonl`) + vector-ready retrieval + optional SQLite indexing.
-- First-run migration support for legacy memory records into typed entities.
-- Native CLI commands under `sp8 kg` for query, graph snapshots, evolution loops, and validation.
-- Physics-ready graph snapshots (`sp8 kg graph --physics`) for Antigravity canvas renderers.
-- Skill governance path: `sp8 kg validate` checks that `SKILL.md` frontmatter declares ontology `reads`/`writes`.
+- Model health scoring to prioritize stable providers in failover queues.
+- Retry-budget policies per task class to prevent runaway retries.
+- Secure-store hardening (typed payloads, versioning, and safer fallbacks).
+- TTL + size-bounded task cache for repeated prompts.
+- Read-only SP8 diagnostics (`sp8 status`) for routing/cache/error visibility.
+- Security-first sandbox defaults (seccomp/gVisor profile + PII redaction before cloud fallback + optional strict egress allowlist mode).
 
-Quick commands:
+### First 10-day execution order
 
-```bash
-sp8 kg query "what do I know about release process"
-sp8 kg graph --physics
-sp8 kg evolve "plan migration to typed ontology entities"
-sp8 kg validate
-```
+1. Sp8Pico mode + single-binary build profile.
+2. Universal local endpoint adapter.
+3. Conversational evolve mode.
+4. Export/import portable profile.
+5. Benchmark command.
+
+### Positioning
+
+Sp8Claw aims to be the only OpenClaw fork that scales from high-power desktops to constrained pocket hardware without switching projects.
 
 ## Star History
 

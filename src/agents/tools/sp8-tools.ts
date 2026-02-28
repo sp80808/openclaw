@@ -10,32 +10,6 @@ import { type AnyAgentTool, jsonResult, readStringParam } from "./common.js";
 
 const router = new Sp8Router();
 
-export function createAntigravityPhysicsTool(): AnyAgentTool {
-  return {
-    name: "antigravity-physics",
-    label: "Antigravity Physics",
-    description: "Generate floating idea graph data for Live Canvas physics layouts.",
-    parameters: Type.Object({
-      ideas: Type.Array(Type.String(), { minItems: 1 }),
-    }),
-    execute: async (_toolCallId, args) => {
-      const params = args as { ideas?: string[] };
-      const ideas = Array.isArray(params.ideas) ? params.ideas.filter(Boolean) : [];
-      const nodes = ideas.map((idea, idx) => ({
-        id: `idea-${idx + 1}`,
-        label: idea,
-        mass: 1 + (idx % 3),
-      }));
-      const links = nodes.slice(1).map((node, idx) => ({
-        from: nodes[idx].id,
-        to: node.id,
-        strength: 0.6,
-      }));
-      return jsonResult({ nodes, links, gravity: -0.08 });
-    },
-  };
-}
-
 export function createSelfEvolveTool(): AnyAgentTool {
   return {
     name: "self-evolve",
@@ -152,29 +126,6 @@ export function createPersonalKgTool(): AnyAgentTool {
         });
       }
       return jsonResult({ entries: rows.slice(-50) });
-    },
-  };
-}
-
-export function createAntigravityEasterEggTool(): AnyAgentTool {
-  return {
-    name: "antigravity-easter-egg",
-    label: "Antigravity Easter Egg",
-    description: "Return xkcd antigravity comic reference and zero-gravity mini-game seed state.",
-    parameters: Type.Object({
-      seed: Type.Optional(Type.String()),
-    }),
-    execute: async (_toolCallId, args) => {
-      const params = args as Record<string, unknown>;
-      const seed = readStringParam(params, "seed") ?? "sp8-zero-g";
-      return jsonResult({
-        comic: "https://xkcd.com/353/",
-        game: {
-          seed,
-          gravity: -0.05,
-          objective: "Collect 8 tentacles and dock with the lobster claw core.",
-        },
-      });
     },
   };
 }

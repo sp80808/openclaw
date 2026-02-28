@@ -19,8 +19,6 @@ import { createSessionsListTool } from "./tools/sessions-list-tool.js";
 import { createSessionsSendTool } from "./tools/sessions-send-tool.js";
 import { createSessionsSpawnTool } from "./tools/sessions-spawn-tool.js";
 import {
-  createAntigravityEasterEggTool,
-  createAntigravityPhysicsTool,
   createParallelMultimodalExecutorTool,
   createPersonalKgTool,
   createSelfEvolveTool,
@@ -174,12 +172,10 @@ export function createOpenClawTools(options?: {
     createSubagentsTool({
       agentSessionKey: options?.agentSessionKey,
     }),
-    createAntigravityPhysicsTool(),
     createSelfEvolveTool(),
     createSwarmCommanderTool(),
     createParallelMultimodalExecutorTool(),
     createPersonalKgTool(),
-    createAntigravityEasterEggTool(),
     createSessionStatusTool({
       agentSessionKey: options?.agentSessionKey,
       config: options?.config,
