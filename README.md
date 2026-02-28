@@ -30,6 +30,15 @@ The wizard guides you step by step through setting up the gateway, workspace, ch
 Works with npm, pnpm, or bun.
 New install? Start here: [Getting started](https://docs.openclaw.ai/start/getting-started)
 
+## Why Sp8Claw
+
+Sp8Claw is the OpenClaw fork for privacy-conscious power users who want free-only agent routing, Antigravity workflows, and resilient multi-modal execution by default.
+
+- Free-first model strategy: OpenRouter free catalog + Gemini CLI OAuth + local fallback paths
+- Sp8Router failover: rotates free models automatically on 429/529/timeouts
+- Parallel intensive mode: OpenRouter + Gemini CLI consensus fusion for heavy tasks
+- Native control plane: `sp8 router`, `sp8 swarm`, `sp8 antigravity`, `sp8 evolve`, and `sp8 mcp`
+
 ## Sponsors
 
 | OpenAI                                                            | Blacksmith                                                                   |

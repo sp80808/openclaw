@@ -355,6 +355,53 @@ export async function sp8KgEvolve(params: {
   };
 }
 
+export async function writeN8nKgWorkflowProfile(params: {
+  filePath: string;
+  objective: string;
+}): Promise<void> {
+  const workflow = {
+    name: "Sp8 KG Planner",
+    nodes: [
+      {
+        id: "trigger",
+        name: "Manual Trigger",
+        type: "n8n-nodes-base.manualTrigger",
+        position: [220, 280],
+        parameters: {},
+      },
+      {
+        id: "kg-query",
+        name: "sp8 kg query",
+        type: "n8n-nodes-base.executeCommand",
+        position: [520, 280],
+        parameters: {
+          command: `sp8 kg query "${params.objective.replaceAll('"', '\\"')}" --limit 12`,
+        },
+      },
+      {
+        id: "kg-evolve",
+        name: "sp8 kg evolve",
+        type: "n8n-nodes-base.executeCommand",
+        position: [840, 280],
+        parameters: {
+          command: `sp8 kg evolve "${params.objective.replaceAll('"', '\\"')}"`,
+        },
+      },
+    ],
+    connections: {
+      "Manual Trigger": {
+        main: [[{ node: "sp8 kg query", type: "main", index: 0 }]],
+      },
+      "sp8 kg query": {
+        main: [[{ node: "sp8 kg evolve", type: "main", index: 0 }]],
+      },
+    },
+  };
+
+  await fs.mkdir(path.dirname(params.filePath), { recursive: true });
+  await fs.writeFile(params.filePath, `${JSON.stringify(workflow, null, 2)}\n`, "utf-8");
+}
+
 export async function sp8KgValidate(params: { workspaceDir: string; stateDir?: string }): Promise<{
   ok: boolean;
   scannedSkills: number;

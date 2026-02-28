@@ -1,198 +1,164 @@
 import type { Command } from "commander";
-import { sp8KgEvolve, sp8KgGraph, sp8KgQuery, sp8KgValidate } from "../commands/sp8-kg.js";
-import {
-  addSp8Mcp,
-  getTrustedMcpCatalog,
-  getTrustedSkillCatalog,
-  installSp8SkillSafe,
-} from "../commands/sp8-power-pack.js";
 import { defaultRuntime } from "../runtime.js";
-
-type SafeOpts = {
-  safe?: boolean;
-  consent?: boolean;
-  sandboxProfile?: string;
-  vtReport?: string;
-};
-
-function resolveSandboxProfile(value: string | undefined): string {
-  return (value ?? "strict").trim().toLowerCase();
-}
-
-function renderCatalogLine(name: string, summary: string): string {
-  return `- ${name}: ${summary}`;
-}
+import { launchAntigravityProject } from "../sp8/antigravity/bridge.js";
+import { appendEvolutionSignal } from "../sp8/evolve.js";
+import {
+  createGeminiPkceAuthSession,
+  exchangeGeminiOAuthCode,
+  loadGeminiOAuthTokens,
+  storeGeminiOAuthTokens,
+} from "../sp8/gemini/oauth.js";
+import {
+  addSp8McpServer,
+  autoWrapSkillsAsMcpServers,
+  readSp8McpConfig,
+} from "../sp8/mcp/server-registry.js";
+import { Sp8Router } from "../sp8/router/sp8-router.js";
+import { createSp8Swarm } from "../sp8/swarm.js";
 
 export function registerSp8Cli(program: Command) {
-  const sp8 = program
-    .command("sp8")
-    .description("Sp8 trusted skill + MCP porting layer (privacy-first and safe by default)");
+  const sp8 = program.command("sp8").description("Sp8Claw controls and integrations");
 
-  const skill = sp8.command("skill").description("Install and manage trusted Sp8 skills");
-
-  skill
-    .command("install")
-    .argument("<name>", "Trusted skill name")
-    .requiredOption("--safe", "Require safe-mode installation")
-    .option("--consent", "Acknowledge and allow vetted install", false)
-    .option("--sandbox-profile <profile>", "Sandbox profile (must be strict)", "strict")
-    .option("--vt-report <path>", "Path to VirusTotal JSON report")
-    .action(async (name: string, opts: SafeOpts) => {
-      try {
-        const result = await installSp8SkillSafe({
-          name,
-          safe: Boolean(opts.safe),
-          consent: Boolean(opts.consent),
-          sandboxProfile: resolveSandboxProfile(opts.sandboxProfile),
-          vtReportPath: opts.vtReport,
-        });
-        defaultRuntime.log(result.message);
-        defaultRuntime.log(`State: ${result.statePath}`);
-      } catch (err) {
-        defaultRuntime.error(String(err));
-        defaultRuntime.exit(1);
-      }
+  const router = sp8.command("router").description("Sp8Router model routing");
+  router
+    .command("status")
+    .description("Show free-model queue status")
+    .option("--refresh", "Force model refresh", false)
+    .action(async () => {
+      const instance = new Sp8Router();
+      await instance.initialize();
+      defaultRuntime.log(JSON.stringify(instance.getStatus(), null, 2));
     });
 
-  skill
-    .command("list")
-    .description("List trusted Sp8 skill catalog")
-    .action(() => {
-      defaultRuntime.log("Trusted Sp8 skills (Feb 2026 vetted snapshot):");
-      for (const entry of getTrustedSkillCatalog()) {
-        defaultRuntime.log(renderCatalogLine(entry.name, entry.summary));
-      }
+  sp8
+    .command("swarm")
+    .description("Spawn 8 specialized Sp8 agents")
+    .option("--goal <text>", "Swarm objective", "Complete the current task reliably")
+    .action((opts) => {
+      const payload = createSp8Swarm(String(opts.goal));
+      defaultRuntime.log(JSON.stringify(payload, null, 2));
     });
 
-  const mcp = sp8.command("mcp").description("Add trusted MCP servers through mcporter");
+  sp8
+    .command("antigravity")
+    .description("Open Antigravity on a project path")
+    .argument("<project-path>", "Project path")
+    .option("--binary <bin>", "Antigravity executable name/path", "antigravity")
+    .action((projectPath: string, opts) => {
+      launchAntigravityProject(projectPath, {
+        binary: String(opts.binary),
+      });
+      defaultRuntime.log(`Launched Antigravity for ${projectPath}`);
+    });
 
+  sp8
+    .command("evolve")
+    .description("Record a self-evolution feedback signal")
+    .requiredOption("--signal <text>", "Feedback signal")
+    .option("--delta <n>", "Score delta", "1")
+    .action(async (opts) => {
+      const delta = Number(opts.delta);
+      const result = await appendEvolutionSignal(
+        String(opts.signal),
+        Number.isFinite(delta) ? delta : 1,
+      );
+      defaultRuntime.log(`Evolution score: ${result.total}`);
+    });
+
+  const mcp = sp8.command("mcp").description("Manage Sp8 MCP servers");
   mcp
     .command("add")
-    .argument("<name>", "Trusted MCP server name")
-    .option("--consent", "Acknowledge and allow vetted MCP addition", false)
-    .option("--sandbox-profile <profile>", "Sandbox profile (must be strict)", "strict")
-    .option("--vt-report <path>", "Path to VirusTotal JSON report")
-    .action(async (name: string, opts: SafeOpts) => {
-      try {
-        const result = await addSp8Mcp({
-          name,
-          consent: Boolean(opts.consent),
-          sandboxProfile: resolveSandboxProfile(opts.sandboxProfile),
-          vtReportPath: opts.vtReport,
-        });
-        defaultRuntime.log(result.message);
-        defaultRuntime.log(`State: ${result.statePath}`);
-        defaultRuntime.log(`MCP config: ${result.mcpConfigPath}`);
-      } catch (err) {
-        defaultRuntime.error(String(err));
-        defaultRuntime.exit(1);
-      }
+    .description("Add a user-defined MCP server")
+    .requiredOption("--name <name>", "Server name")
+    .requiredOption("--command <command>", "Server command")
+    .option("--args <arg...>", "Server arguments")
+    .action(async (opts) => {
+      const config = await addSp8McpServer({
+        server: {
+          name: String(opts.name),
+          command: String(opts.command),
+          args: Array.isArray(opts.args) ? (opts.args as string[]) : [],
+        },
+      });
+      defaultRuntime.log(JSON.stringify(config, null, 2));
     });
 
   mcp
     .command("list")
-    .description("List trusted MCP catalog")
-    .action(() => {
-      defaultRuntime.log("Trusted Sp8 MCP servers (mcporter-first, Feb 2026 vetted snapshot):");
-      for (const entry of getTrustedMcpCatalog()) {
-        defaultRuntime.log(renderCatalogLine(entry.name, entry.summary));
-      }
-    });
-
-  const kg = sp8.command("kg").description("Ontology-powered Personal KG commands");
-
-  kg.command("query")
-    .argument("<text>", "Query text")
-    .option("--limit <n>", "Max results", "10")
-    .action(async (text: string, opts: { limit?: string }) => {
-      try {
-        const limit = Number.parseInt(String(opts.limit ?? "10"), 10);
-        const results = await sp8KgQuery({
-          text,
-          limit: Number.isFinite(limit) ? limit : 10,
-        });
-        if (results.length === 0) {
-          defaultRuntime.log("No matching entities.");
-          return;
-        }
-        for (const result of results) {
-          defaultRuntime.log(
-            `- ${result.label} (${result.type}) [${result.id}] score=${result.score.toFixed(2)}`,
-          );
-        }
-      } catch (err) {
-        defaultRuntime.error(String(err));
-        defaultRuntime.exit(1);
-      }
-    });
-
-  kg.command("graph")
-    .description("Print current ontology graph snapshot")
-    .option("--physics", "Include physics-rendering hints", false)
-    .action(async (opts: { physics?: boolean }) => {
-      try {
-        const graph = await sp8KgGraph({ physics: Boolean(opts.physics) });
-        defaultRuntime.log(JSON.stringify(graph, null, 2));
-      } catch (err) {
-        defaultRuntime.error(String(err));
-        defaultRuntime.exit(1);
-      }
-    });
-
-  kg.command("evolve")
-    .argument("<objective>", "Objective for graph planning + schema evolution")
-    .option(
-      "--fork-type <forkType...>",
-      "Import fork entity type as <fork>:<type> (repeatable)",
-      [],
-    )
-    .action(async (objective: string, opts: { forkType?: string[] }) => {
-      try {
-        const fromForks = (opts.forkType ?? [])
-          .map((value) => {
-            const [fork, entityType] = value.split(":", 2);
-            if (!fork || !entityType) {
-              return undefined;
-            }
-            return { fork, entityTypes: [entityType] };
-          })
-          .filter((entry): entry is { fork: string; entityTypes: string[] } => Boolean(entry));
-        const result = await sp8KgEvolve({
-          objective,
-          fromForks,
-        });
-        defaultRuntime.log(`Created entities: ${result.createdEntityIds.length}`);
-        defaultRuntime.log(`Created relations: ${result.createdRelationIds.length}`);
-        if (result.schemaProposals.length > 0) {
-          defaultRuntime.log("Schema proposals:");
-          for (const proposal of result.schemaProposals) {
-            defaultRuntime.log(`- ${proposal}`);
-          }
-        }
-      } catch (err) {
-        defaultRuntime.error(String(err));
-        defaultRuntime.exit(1);
-      }
-    });
-
-  kg.command("validate")
-    .description("Validate SKILL.md ontology reads/writes declarations")
+    .description("List configured MCP servers")
     .action(async () => {
-      try {
-        const result = await sp8KgValidate({ workspaceDir: process.cwd() });
-        defaultRuntime.log(`Scanned skills: ${result.scannedSkills}`);
-        if (result.ok) {
-          defaultRuntime.log("All scanned skills declare ontology reads/writes.");
-          return;
-        }
-        defaultRuntime.log("Missing declarations:");
-        for (const missing of result.missingDeclarations) {
-          defaultRuntime.log(`- ${missing.skillPath}: ${missing.missing.join(", ")}`);
-        }
-        defaultRuntime.exit(1);
-      } catch (err) {
-        defaultRuntime.error(String(err));
-        defaultRuntime.exit(1);
+      const config = await readSp8McpConfig();
+      defaultRuntime.log(JSON.stringify(config, null, 2));
+    });
+
+  mcp
+    .command("autowrap-skills")
+    .description("Auto-wrap local skills as MCP server entries")
+    .option("--skills-dir <path>", "Skills directory", "skills")
+    .action(async (opts) => {
+      const config = await autoWrapSkillsAsMcpServers({
+        skillsDir: String(opts.skillsDir),
+      });
+      defaultRuntime.log(JSON.stringify(config, null, 2));
+    });
+
+  const gemini = sp8.command("gemini").description("Gemini CLI + OAuth controls");
+  gemini
+    .command("oauth-start")
+    .description("Generate Google OAuth PKCE URL for Gemini CLI")
+    .requiredOption("--client-id <id>", "Google OAuth client id")
+    .requiredOption("--redirect-uri <uri>", "OAuth redirect URI")
+    .option("--scope <scope>", "OAuth scope", "openid email profile")
+    .action(async (opts) => {
+      const session = createGeminiPkceAuthSession({
+        clientId: String(opts.clientId),
+        redirectUri: String(opts.redirectUri),
+        scope: String(opts.scope),
+      });
+      defaultRuntime.log(JSON.stringify(session, null, 2));
+      defaultRuntime.log("Open authorizationUrl in a browser, then exchange the returned code.");
+    });
+
+  gemini
+    .command("oauth-exchange")
+    .description("Exchange OAuth code and persist tokens in keychain/keytar fallback")
+    .requiredOption("--client-id <id>", "Google OAuth client id")
+    .requiredOption("--redirect-uri <uri>", "OAuth redirect URI")
+    .requiredOption("--code <code>", "OAuth code")
+    .requiredOption("--code-verifier <verifier>", "PKCE code verifier")
+    .option("--client-secret <secret>", "OAuth client secret")
+    .action(async (opts) => {
+      const tokens = await exchangeGeminiOAuthCode({
+        clientId: String(opts.clientId),
+        clientSecret: opts.clientSecret as string | undefined,
+        redirectUri: String(opts.redirectUri),
+        code: String(opts.code),
+        codeVerifier: String(opts.codeVerifier),
+      });
+      await storeGeminiOAuthTokens(tokens);
+      defaultRuntime.log("Gemini OAuth tokens stored.");
+    });
+
+  gemini
+    .command("oauth-status")
+    .description("Show whether Gemini OAuth tokens are available")
+    .action(async () => {
+      const tokens = await loadGeminiOAuthTokens();
+      if (!tokens) {
+        defaultRuntime.log("No Gemini OAuth tokens found.");
+        return;
       }
+      defaultRuntime.log(
+        JSON.stringify(
+          {
+            hasAccessToken: Boolean(tokens.accessToken),
+            hasRefreshToken: Boolean(tokens.refreshToken),
+            expiresAtMs: tokens.expiresAtMs,
+            scope: tokens.scope,
+          },
+          null,
+          2,
+        ),
+      );
     });
 }

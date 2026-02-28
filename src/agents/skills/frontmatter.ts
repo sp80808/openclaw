@@ -88,12 +88,25 @@ export function resolveOpenClawMetadata(
   const requires = resolveOpenClawManifestRequires(metadataObj);
   const install = resolveOpenClawManifestInstall(metadataObj, parseInstallSpec);
   const osRaw = resolveOpenClawManifestOs(metadataObj);
+  const ontologyRaw =
+    metadataObj.ontology && typeof metadataObj.ontology === "object"
+      ? (metadataObj.ontology as Record<string, unknown>)
+      : undefined;
+  const ontologyReads = ontologyRaw ? normalizeStringList(ontologyRaw.reads) : [];
+  const ontologyWrites = ontologyRaw ? normalizeStringList(ontologyRaw.writes) : [];
   return {
     always: typeof metadataObj.always === "boolean" ? metadataObj.always : undefined,
     emoji: typeof metadataObj.emoji === "string" ? metadataObj.emoji : undefined,
     homepage: typeof metadataObj.homepage === "string" ? metadataObj.homepage : undefined,
     skillKey: typeof metadataObj.skillKey === "string" ? metadataObj.skillKey : undefined,
     primaryEnv: typeof metadataObj.primaryEnv === "string" ? metadataObj.primaryEnv : undefined,
+    ontology:
+      ontologyReads.length > 0 || ontologyWrites.length > 0
+        ? {
+            reads: ontologyReads.length > 0 ? ontologyReads : undefined,
+            writes: ontologyWrites.length > 0 ? ontologyWrites : undefined,
+          }
+        : undefined,
     os: osRaw.length > 0 ? osRaw : undefined,
     requires: requires,
     install: install.length > 0 ? install : undefined,
